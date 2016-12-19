@@ -1,0 +1,27 @@
+cluster:
+  domainName: "{{ ansible_domain }}"
+  autoDeploy: true
+  nodes:
+    n1:
+      hostname: "{{ ansible_hostname }}"
+  managers:
+    mainNode: "n1"
+    nodes:
+      - "n1"  
+  workers:
+    nodes:
+      - "n1"
+  databases:
+    nodes:
+      - "n1"
+onezone:
+  name: "{{ onezone_name }}"
+  domainName: "{{ ansible_fqdn }}"
+onepanel:
+  users:
+    "admin":
+      password: "password"
+      userRole: "admin"
+    "user":
+      password: "password"
+      userRole: "regular"

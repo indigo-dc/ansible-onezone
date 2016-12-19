@@ -1,0 +1,42 @@
+---
+
+# role stages
+onezone_requirements_check: false
+onezone_install: false
+onezone_configure: false
+onezone_uninstall: false
+onezone_restart: false
+
+# TODO name the variables in hash table consistent with variables above
+onezone: {
+  "install" : "{{ onezone_install }}" ,
+  "configure" : "{{ onezone_configure }}",
+  "uninstall" : "{{ onezone_uninstall }}",
+  "restart" : "{{ onezone_restart }}",
+  "requirements_check": "{{ onezone_requirements_check }}"
+}
+
+onezone_ansible_manual_config_present: "{{ onezone.values()|sum()}}"
+
+# Those port and UDP port 53 needs to be open for onezone to work properly 
+onezone_ports: [ 53, 80, 443, 5555, 5556, 6665, 6666, 7443, 8443, 8876, 8877, 9443 ]
+
+#onezone_manual: "{{ onezone.items() | sum(attribute=1) }}"
+# defaults file for onezone
+onezone_name: "{{ ansible_hostname }}"
+
+# onezone the default package name
+onezone_pkg_name: onezone
+onedata_apt_cache_valid_time: 600
+
+onedata_url: http://packages.onedata.org
+# Place to get apt repository key
+apt_key_id: BC7CC544
+apt_key_url: "{{ onedata_url }}/onedata.gpg.key"
+# apt repository key signature
+#apt_key_sig: 
+# Name of the apt repository for docker
+apt_repository: "deb {{ onedata_url }}/apt/{{ ansible_lsb.id|lower }}/{{ ansible_lsb.codename|lower }} {{ ansible_lsb.codename|lower }} main"
+
+#Files
+onezone_conf_script: onezone_configure.py

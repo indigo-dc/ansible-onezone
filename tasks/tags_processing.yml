@@ -1,0 +1,190 @@
+---
+# tags processing file for onezone
+
+## Following debug messages are a hack, that allows for detection if
+## tags were supplied to Ansible and for running only specific (default)
+## tasks if no tags were supplied. The default behavior is equivalent with
+## supplying a tag 'onezone'
+# Onezone
+
+- debug: msg='initial onezone.uninstall = {{ onezone.uninstall }}, onezone_uninstall={{ onezone_uninstall }}; onezone.restart = {{ onezone.restart }}, onezone_restart={{ onezone_restart }}; onezone.install = {{ onezone.install }}, onezone_install={{ onezone_install }}; onezone.uninstall = {{ onezone.uninstall }}, onezone_uninstall={{ onezone_uninstall }}; onezone.configure = {{ onezone.configure }}, onezone_configure={{ onezone_configure }}'
+  tags: always
+
+- name: Processing Ansible Onezone Arguments
+  debug: msg="Arguments passed {{ onezone_ansible_manual_config_present }}"
+
+- name: Processing Ansible Onezone Tags
+  debug: msg="Processing Ansible Onezone Tags"
+  register: tags_not_present
+
+# Onezone
+- name: Processing Ansible onezone Tag
+  debug: msg="Processing Ansible Onezone Default Tags"
+  tags: onezone
+  register: onezone_defaults
+  when: tags_not_present is undefined
+
+# Onezone
+- name: Processing Ansible Default Args
+  debug: msg="Processing Ansible Onezone Default Tags"
+  register: onezone_defaults
+  when: (tags_not_present is defined) and
+        (onezone_ansible_manual_config_present|int == false)
+
+# Check Requirements for Onezone
+- name: Processing Ansible Onezone onezone:requirements_check Tag
+  debug: msg="Processing Ansible Onezone Tequirements Check Tags"
+  tags: onezone:requirements_check
+  register: onezone_requirements_check
+  when: tags_not_present is undefined
+
+# Configure Onezone
+- name: Processing Ansible onezone:configure Tag
+  debug: msg="Processing Ansible Onezone Configure Tags"
+  tags: onezone:configure
+  register: onezone_configure
+  when: tags_not_present is undefined # then value of the registered value is set to { skipped: true }
+  
+# Install Onezone
+- name: Processing Ansible onezone:install Tag
+  debug: msg="Processing Ansible Onezone Install Tags"
+  tags: onezone:install
+  register: onezone_install
+  when: tags_not_present is undefined
+
+# Uninstall Onezone
+- name: Processing Ansible onezone:uninstall Tag
+  debug: msg="Processing Ansible Onezone Uninstall Tags"
+  tags: onezone:uninstall
+  register: onezone_uninstall
+  when: tags_not_present is undefined
+
+# Restart Onezone
+- name: Processing Ansible onezone:restart Tag
+  debug: msg="Processing Ansible Onezone Restart Tags"
+  tags: onezone:restart
+  register: onezone_restart
+  when: tags_not_present is undefined
+
+# Stop Onezone
+- name: Processing Ansible Onezone Stop Tags
+  debug: msg="Processing Ansible Onezone Stop Tags"
+  tags: onezone:stop
+  register: onezone_stop
+  when: tags_not_present is undefined
+
+- debug: msg="we gona onezone_install"
+  tags: onezone, onezone:install
+  when: (onezone_install.skipped is undefined) or
+        (onezone_defaults.skipped is undefined)
+
+- debug: msg="we gona onezone_uninstall"
+  tags: onezone:uninstall
+  when: onezone_uninstall.skipped is undefined
+
+- debug: msg="tags_not_present"
+  when: tags_not_present.skipped is defined
+
+- debug: msg="we gona onezone_requirements_check"
+  tags: onezone:requirements_check
+  when: onezone_requirements_check.skipped is undefined
+
+- debug: msg="we gona onezone_configure"
+  tags: onezone,onezone:configure
+  when: (onezone_configure.skipped is undefined) or
+        (onezone_defaults.skipped is undefined)
+
+- debug: msg="we gona onezone_restart"
+  tags: onezone:restart
+  when: onezone_restart.skipped is undefined
+
+
+- debug: msg='after onezone.install = {{ onezone.install }}, onezone_install={{ onezone_install }}; onezone.restart = {{ onezone.restart }}, onezone_restart={{ onezone_restart }}; onezone.install = {{ onezone.install }}, onezone_install={{ onezone_install }}; onezone.uninstall = {{ onezone.uninstall }}, onezone_uninstall={{ onezone_uninstall }}; onezone.configure = {{ onezone.configure }}, onezone_configure={{ onezone_configure }}'
+  tags: always
+
+- name: Processing Ansible Onezone Requirements Check Vars
+  set_fact:
+    onezone_requirements_check: true
+  tags: onezone:requirements_check
+  when: onezone_requirements_check.skipped is undefined
+
+- name: Processing Ansible Onezone Install Vars
+  set_fact:
+    onezone_install: true
+  tags: onezone, onezone:install
+  when: (onezone_install.skipped is undefined) or
+        (onezone_defaults.skipped is undefined)
+
+- name: Processing Ansible Onezone Configure Vars
+  set_fact:
+    onezone_configure: true
+  tags: onezone, onezone:configure
+  when: (onezone_configure.skipped is undefined) or
+        (onezone_defaults.skipped is undefined)
+
+- name: Processing Ansible Onezone Uninstall Vars
+  set_fact:
+    onezone_uninstall: true
+  tags: onezone:uninstall
+  when: onezone_uninstall.skipped is undefined
+
+- name: Processing Ansible Onezone Restart Vars
+  set_fact:
+    onezone_restart: true
+  tags: onezone:restart
+  when: onezone_restart.skipped is undefined
+  changed_when: True
+  notify: "Onezone Restart"
+
+- name: Processing Ansible Onezone Stop Vars
+  set_fact:
+    onezone_stop: true
+  tags: onezone:stop
+  when: onezone_stop.skipped is undefined
+  changed_when: True
+  notify: "Onezone Stop"
+
+# - debug: msg='after onezone.install = {{ onezone.install }}, onezone_install={{ onezone_install }}; onezone.restart = {{ onezone.restart }}, onezone_restart={{ onezone_restart }}; onezone.install = {{ onezone.install }}, onezone_install={{ onezone_install }}; onezone.uninstall = {{ onezone.uninstall }}, onezone_uninstall={{ onezone_uninstall }}; onezone.configure = {{ onezone.configure }}, onezone_configure={{ onezone_configure }}'
+#   tags: always
+
+- name: Checking For Onezone Requirements Check Flag
+  debug: 
+    msg: "we gona onezone_requirements_check == True "
+    verbosity: 1
+  tags: onezone:requirements_check
+  when: onezone_requirements_check == True
+
+- name: Checking For Onezone Install Flag
+  debug: 
+    msg: "we gona onezone_install == True"
+    verbosity: 1
+  tags: onezone, onezone:install
+  when: onezone_install == True
+
+- name: Checking For Onezone Uninstall Flag
+  debug: 
+    msg: "we gona onezone_uninstall == True "
+    verbosity: 1
+  tags: onezone:uninstall
+  when: onezone_uninstall == True
+
+- name: Checking For Onezone Configure Flag
+  debug: 
+    msg: "we gona onezone_configure == True "
+    verbosity: 1
+  tags: onezone,onezone:configure
+  when: onezone_configure == True
+
+- name: Checking For Onezone Restart Flag
+  debug: 
+    msg: "we gona onezone_restart == True"
+    verbosity: 1
+  tags: onezone:restart
+  when: onezone_restart == True
+
+- name: Checking For Onezone Stop Flag
+  debug: 
+    msg: "we gona onezone_stop == True"
+    verbosity: 1
+  tags: onezone:stop
+  when: onezone_stop == True

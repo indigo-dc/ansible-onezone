@@ -1,0 +1,44 @@
+---
+# handlers file for onedata.onezone
+
+- name: Onezone Restart
+  debug: msg="Restaring Onezone"
+  tags: onezone:restart
+  changed_when: True
+  notify: 
+    - oz_panel restart 
+    - oz_worker restart 
+    - cluster_manager restart 
+
+- name: oz_panel restart 
+  tags: onezone:restart
+  service: name=oz_panel state=restarted
+
+- name: oz_worker restart 
+  tags: onezone:restart
+  service: name=oz_worker state=restarted
+
+- name: cluster_manager restart 
+  tags: onezone:restart
+  service: name=cluster_manager state=restarted
+
+- name: Onezone Stop
+  debug: msg="Stop Onezone"
+  tags: onezone:stop
+  changed_when: True
+  notify: 
+    - oz_panel stop 
+    - oz_worker stop 
+    - cluster_manager stop 
+
+- name: oz_panel stop 
+  tags: onezone:stop
+  service: name=oz_panel state=stopped
+
+- name: oz_worker stop 
+  tags: onezone:stop
+  service: name=oz_worker state=stopped
+
+- name: cluster_manager stop 
+  tags: onezone:stop
+  service: name=cluster_manager state=stopped
