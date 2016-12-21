@@ -22,3 +22,16 @@
 #   when: ansible_distribution  == "Fedora"
 
 
+# If you use the same role, many times in your playbook its important
+# to reset those values to their default
+- name: Reseting Onezone Arguments
+  set_fact:
+    onezone_stop: false
+    onezone_requirements_check: false
+    onezone_install: false
+    onezone_configure: false
+    onezone_uninstall: false
+    onezone_restart: false
+    onezone_stop: false
+  tags: always
+
