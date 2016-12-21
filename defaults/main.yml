@@ -7,6 +7,7 @@ onezone_configure: false
 onezone_uninstall: false
 onezone_restart: false
 onezone_stop: false
+onezone_start: false
 
 # TODO name the variables in hash table consistent with variables above
 onezone: {
@@ -15,6 +16,7 @@ onezone: {
   "uninstall" : "{{ onezone_uninstall }}",
   "restart" : "{{ onezone_restart }}",
   "stop" : "{{ onezone_stop }}",
+  "start" : "{{ onezone_start }}",
   "requirements_check": "{{ onezone_requirements_check }}"
 }
 

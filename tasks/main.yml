@@ -33,5 +33,6 @@
     onezone_uninstall: false
     onezone_restart: false
     onezone_stop: false
+    onezone_start: false
   tags: always
 

@@ -5,20 +5,20 @@
   debug: msg="Restaring Onezone"
   tags: onezone:restart
   changed_when: True
-  notify: 
-    - oz_panel restart 
-    - oz_worker restart 
-    - cluster_manager restart 
+  notify:
+    - oz_panel restart
+    - oz_worker restart
+    - cluster_manager restart
 
-- name: oz_panel restart 
+- name: oz_panel restart
   tags: onezone:restart
   service: name=oz_panel state=restarted
 
-- name: oz_worker restart 
+- name: oz_worker restart
   tags: onezone:restart
   service: name=oz_worker state=restarted
 
-- name: cluster_manager restart 
+- name: cluster_manager restart
   tags: onezone:restart
   service: name=cluster_manager state=restarted
 
@@ -26,19 +26,40 @@
   debug: msg="Stop Onezone"
   tags: onezone:stop
   changed_when: True
-  notify: 
-    - oz_panel stop 
-    - oz_worker stop 
-    - cluster_manager stop 
+  notify:
+    - oz_panel stop
+    - oz_worker stop
+    - cluster_manager stop
 
-- name: oz_panel stop 
+- name: oz_panel stop
   tags: onezone:stop
   service: name=oz_panel state=stopped
 
-- name: oz_worker stop 
+- name: oz_worker stop
   tags: onezone:stop
   service: name=oz_worker state=stopped
 
-- name: cluster_manager stop 
+- name: cluster_manager stop
   tags: onezone:stop
   service: name=cluster_manager state=stopped
+
+- name: Onezone Start
+  debug: msg="Start Onezone"
+  tags: onezone:start
+  changed_when: True
+  notify:
+    - oz_worker start
+    - cluster_manager start
+    - oz_panel start
+
+- name: oz_panel start
+  tags: onezone:start
+  service: name=oz_panel state=started
+
+- name: oz_worker start
+  tags: onezone:start
+  service: name=oz_worker state=started
+
+- name: cluster_manager start
+  tags: onezone:start
+  service: name=cluster_manager state=started
